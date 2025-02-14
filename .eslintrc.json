@@ -1,0 +1,15 @@
+{
+  "extends": ["next/core-web-vitals", "next/typescript", "standard", "prettier", "plugin:tailwindcss/recommended"],
+  "ignorePatterns": ["node_modules/", ".next/", "out/"],
+  "rules": {
+    //standard
+    "space-before-function-paren": "off",
+    "comma-dangle": "off",
+    //tailwindcss
+    "tailwindcss/no-unnecessary-arbitrary-value": "off",
+    "tailwindcss/classnames-order": "off",
+    "tailwindcss/no-custom-classname": "off",
+    //react-hooks
+    "react-hooks/exhaustive-deps": "off"
+  }
+}

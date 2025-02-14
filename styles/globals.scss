@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  @apply select-none;
+
+  &:horizontal {
+    @apply h-2;
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-custom-gray-900 rounded-full;
+}
