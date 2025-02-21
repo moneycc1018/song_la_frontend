@@ -21,8 +21,8 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
   const [selectedArtists, setSelectedArtists] = useAtom(selectedArtistsAtom);
 
   const filteredData = (
-    searchInput.trim() === "" ? data : data.filter((d) => d.artist_name.includes(searchInput))
-  ).filter((d) => !selectedArtists.some((s) => s.artist_id === d.artist_id));
+    searchInput.trim() === "" ? data : data.filter((a) => a.artist_name.includes(searchInput))
+  ).filter((a) => !selectedArtists.some((sa) => sa.artist_id === a.artist_id));
 
   return (
     <Card>
@@ -31,7 +31,7 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
       </CardHeader>
       <CardContent className="space-y-2">
         {/* search input */}
-        <div className="flex h-9 w-full items-center gap-2 rounded-md border border-light-text px-3 dark:border-dark-text">
+        <div className="flex h-10 w-full items-center gap-2 rounded-md border border-light-text px-3 py-2 dark:border-dark-text">
           <input
             type="text"
             placeholder="Artist Name"
@@ -45,17 +45,17 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
         </div>
         {/* menu items */}
         {filteredData.length > 0 && (
-          <div className="select-none rounded-md border border-light-text dark:border-dark-text">
-            <ScrollArea className={cn("flex flex-col", filteredData.length > 4 ? "h-40" : "h-auto")}>
+          <div className="h-[180px] select-none overflow-hidden rounded-md border border-light-text dark:border-dark-text">
+            <ScrollArea className={cn("flex flex-col", filteredData.length > 4 ? "h-[180px]" : "h-auto")}>
               {filteredData
-                .filter((d) => d.artist_name.includes(searchInput))
-                .map((d) => (
+                .filter((a) => a.artist_name.includes(searchInput))
+                .map((a) => (
                   <div
-                    key={d.artist_id}
-                    className="cursor-pointer px-3 py-1.5 hover:bg-accent hover:text-light-text"
-                    onClick={() => setSelectedArtists((prev) => [...prev, d])}
+                    key={a.artist_id}
+                    className="cursor-pointer px-3 py-2 hover:bg-primary hover:text-light-text"
+                    onClick={() => setSelectedArtists((prev) => [...prev, a])}
                   >
-                    {d.artist_name}
+                    {a.artist_name}
                   </div>
                 ))}
             </ScrollArea>
@@ -64,18 +64,18 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
         {/* selected items */}
         {selectedArtists.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {selectedArtists.map((s) => (
+            {selectedArtists.map((sa) => (
               <div
-                key={`s-${s.artist_id}`}
-                className="flex select-none items-center gap-1 rounded-full border-2 border-accent px-2.5 py-0.5 font-semibold"
+                key={`s-${sa.artist_id}`}
+                className="flex select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary"
               >
                 <button
                   className="hover:text-custom-red-300"
-                  onClick={() => setSelectedArtists((prev) => prev.filter((p) => p.artist_id !== s.artist_id))}
+                  onClick={() => setSelectedArtists((prev) => prev.filter((p) => p.artist_id !== sa.artist_id))}
                 >
                   <XIcon size={20} />
                 </button>
-                <span>{s.artist_name}</span>
+                <span>{sa.artist_name}</span>
               </div>
             ))}
           </div>

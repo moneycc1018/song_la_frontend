@@ -27,7 +27,7 @@ export default function PageSwitch() {
               <span>KKBOX</span>
             </Link>
           </TabsTrigger>
-          <TabsTrigger value="ytmusic" className="w-full">
+          <TabsTrigger value="ytmusic" className="w-full" asChild>
             <Link href={"/ytmusic"} className="flex items-center gap-2">
               <div className="relative min-h-5 min-w-5">
                 <Image
@@ -41,7 +41,6 @@ export default function PageSwitch() {
                   fill
                 />
               </div>
-
               <span>YouTube Music</span>
             </Link>
           </TabsTrigger>
