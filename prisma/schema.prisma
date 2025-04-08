@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model kkbox_info {
+  track_id     String  @id @db.VarChar(50)
+  track_name   String  @db.VarChar(255)
+  artist_id    String  @db.VarChar(50)
+  artist_name  String  @db.VarChar(255)
+  album_id     String  @db.VarChar(50)
+  album_name   String  @db.VarChar(255)
+  release_date String? @db.VarChar(50)
+  tags         Json?
+}
+
+model tag {
+  id         Int     @id @default(autoincrement())
+  tag_name   String  @unique @db.VarChar(50)
+  deprecated Boolean @default(false)
+}
+
+model ytmusic_info {
+  video_id     String  @id @db.VarChar(50)
+  track_name   String  @db.VarChar(255)
+  artist_ids   Json
+  artist_names Json
+  author       String  @db.VarChar(255)
+  album_id     String  @db.VarChar(50)
+  album_name   String  @db.VarChar(255)
+  release_year String? @db.VarChar(50)
+  tags         Json?
+  lyrics_id    String? @db.VarChar(50)
+  lyrics       String?
+}

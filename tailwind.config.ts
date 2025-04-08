@@ -11,7 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#8ab8ff",
+        primary: "#3274d9",
         light: {
           url: "#1a0dab",
           text: "#081b33",
@@ -19,6 +19,7 @@ const config: Config = {
           card: "#ededed",
         },
         dark: {
+          primary: "#8ab8ff",
           url: "#8ab4f8",
           text: "#ededed",
           background: "#081b33",

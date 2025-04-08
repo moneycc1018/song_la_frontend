@@ -6,16 +6,18 @@ import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 select-none",
   {
     variants: {
       variant: {
-        default: "bg-primary text-light-text hover:bg-primary/90",
+        default:
+          "bg-primary text-dark-text hover:bg-primary/90 dark:bg-dark-primary dark:text-light-text dark:hover:bg-dark-primary/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-primary bg-transparent hover:bg-primary hover:text-light-text",
+        outline:
+          "border border-primary text-primary bg-transparent hover:bg-primary hover:text-dark-text dark:border-dark-primary dark:text-dark-primary dark:hover:bg-dark-primary dark:hover:text-light-text",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "dark:text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",

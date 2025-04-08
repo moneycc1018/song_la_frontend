@@ -5,11 +5,12 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import { XIcon } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { cn } from "@/lib/utils";
-import { selectedArtistsAtom } from "@/store/selected-items-store";
+import { selectedArtistsAtom } from "@/store/selected-item-store";
 
 interface ArtistSelectCardProps {
   data: Array<Record<string, string>>;
@@ -31,17 +32,25 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
       </CardHeader>
       <CardContent className="space-y-2">
         {/* search input */}
-        <div className="flex h-10 w-full items-center gap-2 rounded-md border border-light-text px-3 py-2 dark:border-dark-text">
-          <input
-            type="text"
-            placeholder="Artist Name"
-            className="w-full bg-transparent text-base placeholder:text-custom-gray-900 focus:outline-none"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-          <button className="hover:text-custom-red-300" onClick={() => setSearchInput("")}>
-            <XIcon />
-          </button>
+        <div className="flex items-center gap-2">
+          <div className="flex h-10 w-full items-center gap-2 rounded-md border border-light-text px-3 py-2 dark:border-dark-text">
+            <input
+              type="text"
+              placeholder="Artist Name"
+              className="w-full bg-transparent text-base placeholder:text-custom-gray-900 focus:outline-none"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+            <button className="hover:text-custom-red-300" onClick={() => setSearchInput("")}>
+              <XIcon />
+            </button>
+          </div>
+          <Button variant={"outline"} className="w-24" onClick={() => setSelectedArtists(data.map((a) => a))}>
+            Select All
+          </Button>
+          <Button variant={"outline"} className="w-24" onClick={() => setSelectedArtists([])}>
+            Remove All
+          </Button>
         </div>
         {/* menu items */}
         {filteredData.length > 0 && (
@@ -52,7 +61,7 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
                 .map((a) => (
                   <div
                     key={a.artist_id}
-                    className="cursor-pointer px-3 py-2 hover:bg-primary hover:text-light-text"
+                    className="dark:hover:bg-dark-primary cursor-pointer px-3 py-2 hover:bg-primary hover:text-dark-text dark:hover:text-light-text"
                     onClick={() => setSelectedArtists((prev) => [...prev, a])}
                   >
                     {a.artist_name}
@@ -67,7 +76,7 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
             {selectedArtists.map((sa) => (
               <div
                 key={`s-${sa.artist_id}`}
-                className="flex select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary"
+                className="dark:border-dark-primary dark:text-dark-primary flex select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary"
               >
                 <button
                   className="hover:text-custom-red-300"

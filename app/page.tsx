@@ -6,7 +6,7 @@ export default async function IndexPage() {
   return (
     <div className="flex h-screen items-center justify-center bg-light-background text-light-text dark:bg-dark-background dark:text-dark-text">
       <Button asChild>
-        <Link href={"/kkbox"}>PLAY</Link>
+        <Link href={"/kkbox/playground"}>PLAY</Link>
       </Button>
     </div>
   );
