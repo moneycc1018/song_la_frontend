@@ -107,7 +107,7 @@ function BtnBar() {
 
   return (
     <div className="absolute bottom-0 z-10 flex items-center justify-center gap-4">
-      <div className="dark:border-dark-primary dark:text-dark-primary flex h-10 w-32 select-none items-center justify-center rounded-md border border-primary text-primary">
+      <div className="flex h-10 w-32 select-none items-center justify-center rounded-md border border-primary text-primary dark:border-dark-primary dark:text-dark-primary">
         {isLoading ? "Loading..." : `${trackIndex}/${trackCount} tracks`}
       </div>
       <Button variant={"outline"} className="px-8 text-primary" onClick={() => clickPlay()}>

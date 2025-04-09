@@ -61,7 +61,7 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
                 .map((a) => (
                   <div
                     key={a.artist_id}
-                    className="dark:hover:bg-dark-primary cursor-pointer px-3 py-2 hover:bg-primary hover:text-dark-text dark:hover:text-light-text"
+                    className="cursor-pointer px-3 py-2 hover:bg-primary hover:text-dark-text dark:hover:bg-dark-primary dark:hover:text-light-text"
                     onClick={() => setSelectedArtists((prev) => [...prev, a])}
                   >
                     {a.artist_name}
@@ -75,8 +75,8 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
           <div className="flex flex-wrap gap-2">
             {selectedArtists.map((sa) => (
               <div
-                key={`s-${sa.artist_id}`}
-                className="dark:border-dark-primary dark:text-dark-primary flex select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary"
+                key={`selected-${sa.artist_id}`}
+                className="flex w-fit select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary dark:border-dark-primary dark:text-dark-primary"
               >
                 <button
                   className="hover:text-custom-red-300"
