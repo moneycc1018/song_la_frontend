@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 export default function TagModifyCard() {
   const [searchInput, setSearchInput] = useState("");
 
-  const { data } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["tag"],
     queryFn: async () => {
       const res = await fetch("/api/tag");
@@ -21,8 +21,6 @@ export default function TagModifyCard() {
       return result.data;
     },
   });
-
-  console.log(data);
 
   return (
     <Card>
@@ -39,7 +37,10 @@ export default function TagModifyCard() {
             Update
           </Button>
         </div>
-        {data &&
+        {isLoading ? (
+          <span className="flex h-[30px] w-full items-center justify-center">Loading...</span>
+        ) : (
+          data &&
           data.length > 0 &&
           data.map((t: Record<string, string>) => (
             <div
@@ -54,7 +55,8 @@ export default function TagModifyCard() {
               </button>
               <span>{t.tag_name}</span>
             </div>
-          ))}
+          ))
+        )}
       </CardContent>
     </Card>
   );

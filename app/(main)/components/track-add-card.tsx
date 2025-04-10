@@ -6,6 +6,8 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 
+import { addInfo } from "@/actions/kkbox/kkbox.action";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,7 +19,7 @@ export default function TrackAddCard() {
   const platform = pathname.split("/")[1];
   const [searchInput, setSearchInput] = useState("");
   const [queryValue, setQueryValue] = useState("");
-  const [isCheckedArray, setIsCheckedArray] = useState(new Array(10).map(() => false));
+  const [isCheckedArray, setIsCheckedArray] = useState(new Array(10).fill(false));
   const [isAllChecked, setIsAllChecked] = useState(false);
 
   function updateIsAllChecked(newIsCheckedArray: Array<boolean>) {
@@ -57,6 +59,29 @@ export default function TrackAddCard() {
     enabled: !!queryValue,
   });
 
+  async function clickAddBtn() {
+    const selectedData = data.filter(
+      (
+        _: {
+          video_id?: string;
+          track_id?: string;
+          track_name: string;
+          artist_names?: JsonValue;
+          album_name: string;
+          artist_name: string;
+        },
+        index: number,
+      ) => isCheckedArray[index],
+    );
+
+    const res = await addInfo(selectedData);
+
+    if (res?.status === 200) {
+      alert(`${res.data.join(", ")} added successfully!`);
+      window.location.reload();
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -68,7 +93,7 @@ export default function TrackAddCard() {
           <Button variant={"outline"} className="w-32" onClick={() => setQueryValue(searchInput)}>
             Search
           </Button>
-          <Button variant={"outline"} className="w-32">
+          <Button variant={"outline"} className="w-32" onClick={clickAddBtn} disabled={!(data && data.length > 0)}>
             Add
           </Button>
         </div>
@@ -89,22 +114,34 @@ export default function TrackAddCard() {
               <span className="col-span-4 flex h-8 items-center border-b border-light-text px-1 font-bold dark:border-dark-text">
                 Album
               </span>
-              {data.map((d: Record<string, JsonValue>, index: number) => (
-                <React.Fragment key={`new-track-${index}`}>
-                  <div className="flex items-center border-b border-custom-gray-900/50 px-1 py-2">
-                    <Checkbox checked={isCheckedArray[index]} onCheckedChange={() => handleSelectOne(index)} />
-                  </div>
-                  <span className="col-span-4 flex items-center border-b border-custom-gray-900/50 px-1 py-2">
-                    {(d.track_name as string).split(" - ")[0].split(" (")[0]}
-                  </span>
-                  <span className="col-span-3 flex items-center border-b border-custom-gray-900/50 px-1 py-2">
-                    {(d.artist_name as string).split(" (")[0]}
-                  </span>
-                  <span className="col-span-4 flex items-center border-b border-custom-gray-900/50 px-1 py-2">
-                    {(d.album_name as string).split(" - ")[0].split(" (")[0]}
-                  </span>
-                </React.Fragment>
-              ))}
+              {data.map(
+                (
+                  d: {
+                    video_id?: string;
+                    track_id?: string;
+                    track_name: string;
+                    artist_names?: JsonValue;
+                    album_name: string;
+                    artist_name: string;
+                  },
+                  index: number,
+                ) => (
+                  <React.Fragment key={`new-track-${index}`}>
+                    <div className="flex items-center border-b border-custom-gray-900/50 px-1 py-2">
+                      <Checkbox checked={isCheckedArray[index]} onCheckedChange={() => handleSelectOne(index)} />
+                    </div>
+                    <span className="col-span-4 flex items-center border-b border-custom-gray-900/50 px-1 py-2">
+                      {(d.track_name as string).split(" - ")[0].split(" (")[0]}
+                    </span>
+                    <span className="col-span-3 flex items-center border-b border-custom-gray-900/50 px-1 py-2">
+                      {(d.artist_name as string).split(" (")[0]}
+                    </span>
+                    <span className="col-span-4 flex items-center border-b border-custom-gray-900/50 px-1 py-2">
+                      {(d.album_name as string).split(" - ")[0].split(" (")[0]}
+                    </span>
+                  </React.Fragment>
+                ),
+              )}
             </div>
           </ScrollArea>
         ) : (
