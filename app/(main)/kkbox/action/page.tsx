@@ -20,13 +20,22 @@ export default async function KkboxActionPage() {
     },
   });
 
+  const tagResult = await prisma.tag.findMany({
+    where: {
+      deprecated: false,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+
   return (
     <ScrollArea className="h-full">
       <div className="grid grid-cols-2 gap-4 px-32 py-4">
         <TrackListCard data={result} />
         <div className="flex flex-col gap-4">
           <TrackAddCard />
-          <TagModifyCard />
+          <TagModifyCard data={tagResult} />
         </div>
       </div>
     </ScrollArea>

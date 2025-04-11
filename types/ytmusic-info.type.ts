@@ -1,6 +1,6 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 
-export interface YtmusicInfo {
+export interface YtmusicInfoType {
   video_id: string;
   track_name: string;
   artist_ids: JsonValue;
@@ -9,7 +9,7 @@ export interface YtmusicInfo {
   album_id: string;
   album_name: string;
   release_year?: string;
-  tags: JsonValue;
+  tags?: JsonValue;
   lyrics_id?: string;
   lyrics?: string;
 }

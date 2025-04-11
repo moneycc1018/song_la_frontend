@@ -1,6 +1,6 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 
-export interface KkboxInfo {
+export interface KkboxInfoType {
   track_id: string;
   track_name: string;
   artist_id: string;
@@ -8,5 +8,5 @@ export interface KkboxInfo {
   album_id: string;
   album_name: string;
   release_date?: string;
-  tags: JsonValue;
+  tags?: JsonValue;
 }

@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 
-import { JsonValue } from "@prisma/client/runtime/library";
+import { usePathname } from "next/navigation";
 
-import { deleteInfo } from "@/actions/kkbox/kkbox.action";
+import { deleteInfo as kkboxDeleteInfo } from "@/actions/kkbox.action";
+import { deleteInfo as ytmusicDeleteInfo } from "@/actions/ytmusic.action";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,16 +13,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+import { DisplayedTrackType } from "@/types/index.type";
+
 interface TrackListCardProps {
-  data: Array<{
-    video_id?: string;
-    track_id?: string;
-    track_name: string;
-    artist_names?: JsonValue;
-    album_name: string;
-    tags: JsonValue;
-    artist_name: string;
-  }>;
+  data: Array<DisplayedTrackType>;
 }
 
 export default function TrackListCard(props: TrackListCardProps) {
@@ -29,17 +24,9 @@ export default function TrackListCard(props: TrackListCardProps) {
   const [isCheckedArray, setIsCheckedArray] = useState(data.map(() => false));
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const [filteredData, setFilteredData] = useState<
-    Array<{
-      video_id?: string;
-      track_id?: string;
-      track_name: string;
-      artist_names?: JsonValue;
-      album_name: string;
-      tags: JsonValue;
-      artist_name: string;
-    }>
-  >([]);
+  const [filteredData, setFilteredData] = useState<Array<DisplayedTrackType>>([]);
+  const pathname = usePathname();
+  const platform = pathname.split("/")[1];
 
   function updateIsAllChecked(newIsCheckedArray: Array<boolean>) {
     setIsAllChecked(newIsCheckedArray.every((e) => e));
@@ -66,19 +53,21 @@ export default function TrackListCard(props: TrackListCardProps) {
       setFilteredData(
         data.filter(
           (d) =>
-            (d.track_name as string).split(" - ")[0].split(" (")[0].includes(searchInput) ||
-            (d.artist_name as string).split(" (")[0].includes(searchInput),
+            (d.track_name as string).split(" - ")[0].split(" (")[0].includes(searchInput.trim()) ||
+            (d.artist_name as string).split(" (")[0].includes(searchInput.trim()),
         ),
       );
     }
   }, [searchInput]);
 
   async function clickDeleteBtn() {
-    const selectedTrackIds = filteredData
-      .filter((_: Record<string, JsonValue>, index: number) => isCheckedArray[index])
-      .map((d) => (d.track_id ? d.track_id : d.video_id));
+    const selectedTrackIdsStr = filteredData
+      .filter((_: DisplayedTrackType, index: number) => isCheckedArray[index])
+      .map((d) => (d.track_id ? d.track_id : d.video_id))
+      .join("!@!");
 
-    const res = await deleteInfo(selectedTrackIds.join("!@!"));
+    const res =
+      platform === "kkbox" ? await kkboxDeleteInfo(selectedTrackIdsStr) : await ytmusicDeleteInfo(selectedTrackIdsStr);
 
     if (res?.status === 200) {
       alert(`${res.data.join(", ")} deleted successfully!`);

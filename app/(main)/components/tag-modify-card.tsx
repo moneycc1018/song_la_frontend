@@ -2,61 +2,107 @@
 
 import { useState } from "react";
 
-import { useQuery } from "@tanstack/react-query";
 import { XIcon } from "lucide-react";
+
+import { addTag, deleteTag, updateTag } from "@/actions/tag.action";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-export default function TagModifyCard() {
-  const [searchInput, setSearchInput] = useState("");
+import { TagType } from "@/types/index.type";
 
-  const { isLoading, data } = useQuery({
-    queryKey: ["tag"],
-    queryFn: async () => {
-      const res = await fetch("/api/tag");
-      const result = await res.json();
+import { cn } from "@/lib/utils";
 
-      return result.data;
-    },
-  });
+interface TagModifyCardProps {
+  data: Array<TagType>;
+}
+
+export default function TagModifyCard(props: TagModifyCardProps) {
+  const { data } = props;
+  const [tagName, setTagName] = useState("");
+  const [selectedTagId, setSelectedTagId] = useState<number>();
+
+  async function clickAddBtn() {
+    if (tagName.trim() !== "") {
+      const res = await addTag({ tag_name: tagName });
+
+      if (res?.status === 200) {
+        alert(`${res.data} added successfully!`);
+        window.location.reload();
+      }
+    }
+  }
+
+  async function clickDeleteBtn(tagId: number) {
+    const res = await deleteTag(tagId);
+
+    if (res?.status === 200) {
+      alert(`${res.data} deleted successfully!`);
+      window.location.reload();
+    }
+  }
+
+  async function clickUpdateBtn() {
+    const res = await updateTag(selectedTagId!, { tag_name: tagName });
+
+    if (res?.status === 200) {
+      alert(`${res.data} updated successfully!`);
+      window.location.reload();
+    }
+  }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Modify Tag</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2">
         <div className="flex items-center gap-2">
-          <Input placeholder="Tag Name" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
-          <Button variant={"outline"} className="w-32">
+          <Input placeholder="Tag Name" value={tagName} onChange={(e) => setTagName(e.target.value)} />
+          <Button variant={"outline"} className="w-32" onClick={clickAddBtn} disabled={selectedTagId !== undefined}>
             Add
           </Button>
-          <Button variant={"outline"} className="w-32">
+          <Button variant={"outline"} className="w-32" onClick={clickUpdateBtn} disabled={selectedTagId === undefined}>
             Update
           </Button>
         </div>
-        {isLoading ? (
-          <span className="flex h-[30px] w-full items-center justify-center">Loading...</span>
-        ) : (
-          data &&
-          data.length > 0 &&
-          data.map((t: Record<string, string>) => (
-            <div
-              key={`tag-${t.id}`}
-              className="flex w-fit select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary dark:border-dark-primary dark:text-dark-primary"
-            >
-              <button
-                className="text-custom-red-300"
-                //   onClick={() => setSelectedArtists((prev) => prev.filter((p) => p.artist_id !== sa.artist_id))}
+        <div className="flex flex-wrap gap-2">
+          {data.length > 0 &&
+            data.map((t: TagType) => (
+              <div
+                key={`tag-${t.id}`}
+                className={cn(
+                  "flex w-fit select-none items-center gap-1 rounded-full border border-primary px-2.5 py-0.5 font-semibold dark:border-dark-primary",
+                  selectedTagId === t.id
+                    ? "bg-primary text-dark-text dark:bg-dark-primary dark:text-light-text"
+                    : "text-primary dark:text-dark-primary",
+                )}
               >
-                <XIcon size={20} />
-              </button>
-              <span>{t.tag_name}</span>
-            </div>
-          ))
-        )}
+                <button
+                  className={
+                    selectedTagId === t.id ? "text-custom-red-300 dark:text-custom-red-700" : "text-custom-red-300"
+                  }
+                  onClick={() => clickDeleteBtn(t.id)}
+                >
+                  <XIcon size={20} />
+                </button>
+                <button
+                  onClick={() => {
+                    if (selectedTagId === t.id) {
+                      setSelectedTagId(undefined);
+                      setTagName("");
+                    } else {
+                      setSelectedTagId(t.id);
+                      setTagName(t.tag_name);
+                    }
+                  }}
+                >
+                  {t.tag_name}
+                </button>
+              </div>
+            ))}
+        </div>
       </CardContent>
     </Card>
   );

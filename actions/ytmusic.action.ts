@@ -1,12 +1,12 @@
 "use server";
 
-import { KkboxInfo } from "@/types/kkbox-info.type";
+import { YtmusicInfoType } from "@/types/ytmusic-info.type";
 
-export async function addInfo(paramsObj: KkboxInfo) {
+export async function addInfo(paramsObj: YtmusicInfoType) {
   try {
     const baseUrl = process.env.API_URL;
 
-    const response = await fetch(baseUrl + "/kkbox/info/add", {
+    const response = await fetch(baseUrl + "/ytmusic/info/add", {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -22,8 +22,10 @@ export async function addInfo(paramsObj: KkboxInfo) {
       return {
         status: 200,
         message: "success",
-        data: data.map((d: KkboxInfo) => d.track_name.split(" - ")[0].split(" (")[0]),
+        data: data.map((d: YtmusicInfoType) => d.track_name.split(" - ")[0].split(" (")[0]),
       };
+    } else {
+      throw new Error(`ytmusic addInfo response was not ok, ${response.status} ${response.statusText}`);
     }
   } catch (error) {
     console.error(error);
@@ -34,11 +36,11 @@ export async function addInfo(paramsObj: KkboxInfo) {
   }
 }
 
-export async function deleteInfo(trackIdsStr: string) {
+export async function deleteInfo(videoIdsStr: string) {
   try {
     const baseUrl = process.env.API_URL;
 
-    const response = await fetch(baseUrl + `/kkbox/info/delete?value=${trackIdsStr}`, {
+    const response = await fetch(baseUrl + `/ytmusic/info/delete?value=${videoIdsStr}`, {
       method: "DELETE",
       cache: "no-store",
     });
@@ -49,8 +51,10 @@ export async function deleteInfo(trackIdsStr: string) {
       return {
         status: 200,
         message: "success",
-        data: data.map((d: KkboxInfo) => d.track_name.split(" - ")[0].split(" (")[0]),
+        data: data.map((d: YtmusicInfoType) => d.track_name.split(" - ")[0].split(" (")[0]),
       };
+    } else {
+      throw new Error(`ytmusic addInfo response was not ok, ${response.status} ${response.statusText}`);
     }
   } catch (error) {
     console.error(error);
