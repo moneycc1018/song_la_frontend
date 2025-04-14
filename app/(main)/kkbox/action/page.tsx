@@ -32,7 +32,7 @@ export default async function KkboxActionPage() {
   return (
     <ScrollArea className="h-full">
       <div className="grid grid-cols-2 gap-4 px-32 py-4">
-        <TrackListCard data={result} />
+        <TrackListCard data={result} tagData={tagResult} />
         <div className="flex flex-col gap-4">
           <TrackAddCard />
           <TagModifyCard data={tagResult} />

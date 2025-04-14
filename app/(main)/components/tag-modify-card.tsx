@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { useSetAtom } from "jotai";
 import { XIcon } from "lucide-react";
 
 import { addTag, deleteTag, updateTag } from "@/actions/tag.action";
@@ -13,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { TagType } from "@/types/index.type";
 
 import { cn } from "@/lib/utils";
+import { tagModifyCardHeightAtom } from "@/store";
 
 interface TagModifyCardProps {
   data: Array<TagType>;
@@ -22,6 +24,8 @@ export default function TagModifyCard(props: TagModifyCardProps) {
   const { data } = props;
   const [tagName, setTagName] = useState("");
   const [selectedTagId, setSelectedTagId] = useState<number>();
+  const ref = useRef<HTMLDivElement>(null);
+  const setHeight = useSetAtom(tagModifyCardHeightAtom);
 
   async function clickAddBtn() {
     if (tagName.trim() !== "") {
@@ -44,16 +48,24 @@ export default function TagModifyCard(props: TagModifyCardProps) {
   }
 
   async function clickUpdateBtn() {
-    const res = await updateTag(selectedTagId!, { tag_name: tagName });
+    if (tagName.trim() !== "") {
+      const res = await updateTag(selectedTagId!, { tag_name: tagName });
 
-    if (res?.status === 200) {
-      alert(`${res.data} updated successfully!`);
-      window.location.reload();
+      if (res?.status === 200) {
+        alert(`${res.data} updated successfully!`);
+        window.location.reload();
+      }
     }
   }
 
+  useEffect(() => {
+    if (ref.current) {
+      setHeight(ref.current.offsetHeight);
+    }
+  }, []);
+
   return (
-    <Card>
+    <Card ref={ref}>
       <CardHeader>
         <CardTitle>Modify Tag</CardTitle>
       </CardHeader>

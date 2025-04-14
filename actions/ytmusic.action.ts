@@ -64,3 +64,37 @@ export async function deleteInfo(videoIdsStr: string) {
     };
   }
 }
+
+export async function updateTags(videoId: string, paramsObj: { tags: Array<number> }) {
+  try {
+    const baseUrl = process.env.API_URL;
+
+    const response = await fetch(baseUrl + `/ytmusic/tags/update?video_id=${videoId}`, {
+      method: "PUT",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paramsObj),
+      cache: "no-store",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      return {
+        status: 200,
+        message: "success",
+        data: data.track_name.split(" - ")[0].split(" (")[0],
+      };
+    } else {
+      throw new Error(`ytmusic updateTags response was not ok, ${response.status} ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      status: 500,
+      message: "failed to update",
+    };
+  }
+}
