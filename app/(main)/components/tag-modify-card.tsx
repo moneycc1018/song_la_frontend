@@ -72,10 +72,20 @@ export default function TagModifyCard(props: TagModifyCardProps) {
       <CardContent className="space-y-2">
         <div className="flex items-center gap-2">
           <Input placeholder="Tag Name" value={tagName} onChange={(e) => setTagName(e.target.value)} />
-          <Button variant={"outline"} className="w-32" onClick={clickAddBtn} disabled={selectedTagId !== undefined}>
+          <Button
+            variant={"outline"}
+            className="min-w-24 p-0"
+            onClick={clickAddBtn}
+            disabled={selectedTagId !== undefined}
+          >
             Add
           </Button>
-          <Button variant={"outline"} className="w-32" onClick={clickUpdateBtn} disabled={selectedTagId === undefined}>
+          <Button
+            variant={"outline"}
+            className="min-w-24 p-0"
+            onClick={clickUpdateBtn}
+            disabled={selectedTagId === undefined}
+          >
             Update
           </Button>
         </div>

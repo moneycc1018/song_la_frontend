@@ -40,7 +40,7 @@ export async function deleteInfo(videoIdsStr: string) {
   try {
     const baseUrl = process.env.API_URL;
 
-    const response = await fetch(baseUrl + `/ytmusic/info/delete?value=${videoIdsStr}`, {
+    const response = await fetch(baseUrl + `/ytmusic/info/delete?video_ids_str=${videoIdsStr}`, {
       method: "DELETE",
       cache: "no-store",
     });
@@ -54,7 +54,7 @@ export async function deleteInfo(videoIdsStr: string) {
         data: data.map((d: YtmusicInfoType) => d.track_name.split(" - ")[0].split(" (")[0]),
       };
     } else {
-      throw new Error(`ytmusic addInfo response was not ok, ${response.status} ${response.statusText}`);
+      throw new Error(`ytmusic deleteInfo response was not ok, ${response.status} ${response.statusText}`);
     }
   } catch (error) {
     console.error(error);

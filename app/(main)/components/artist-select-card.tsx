@@ -45,10 +45,14 @@ export default function ArtistSelectCard(props: ArtistSelectCardProps) {
               <XIcon />
             </button>
           </div>
-          <Button variant={"outline"} className="w-24" onClick={() => setSelectedArtists(data.map((a) => a))}>
+          <Button variant={"outline"} className="min-w-24 p-0" onClick={() => setSelectedArtists(data.map((a) => a))}>
             Select All
           </Button>
-          <Button variant={"outline"} className="w-24" onClick={() => setSelectedArtists([])}>
+          <Button
+            variant={"outline"}
+            className="min-w-24 border-custom-red-700 p-0 text-custom-red-700 hover:bg-custom-red-700 dark:border-custom-red-300 dark:text-custom-red-300 dark:hover:bg-custom-red-300"
+            onClick={() => setSelectedArtists([])}
+          >
             Remove All
           </Button>
         </div>

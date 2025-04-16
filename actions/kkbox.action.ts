@@ -40,7 +40,7 @@ export async function deleteInfo(trackIdsStr: string) {
   try {
     const baseUrl = process.env.API_URL;
 
-    const response = await fetch(baseUrl + `/kkbox/info/delete?value=${trackIdsStr}`, {
+    const response = await fetch(baseUrl + `/kkbox/info/delete?track_ids_str=${trackIdsStr}`, {
       method: "DELETE",
       cache: "no-store",
     });

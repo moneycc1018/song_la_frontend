@@ -37,11 +37,13 @@ interface UpdateButtonProps {
   platform: string;
 }
 
+// update button (update tags)
 function UpdateButton(props: UpdateButtonProps) {
   const { trackData, tagData, tagMapping, disabled, platform } = props;
   const [addedTags, setAddedTags] = useState<Array<number>>([]);
   const [unaddedTags, setUnaddedTags] = useState<Array<number>>(tagData.sort().map((t) => t.id));
 
+  // initialize
   useEffect(() => {
     if (trackData) {
       const tags = trackData.tags ? (trackData.tags as Array<number>) : [];
@@ -53,6 +55,7 @@ function UpdateButton(props: UpdateButtonProps) {
     }
   }, [trackData]);
 
+  // 點擊 confirm 按鈕 (儲存 tags)
   async function clickConfirmBtn() {
     const tags = trackData.tags ? (trackData.tags as Array<number>) : [];
     if (arraysHaveSameElements(tags, addedTags)) return;
@@ -70,7 +73,7 @@ function UpdateButton(props: UpdateButtonProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} className="w-32" disabled={disabled}>
+        <Button variant={"outline"} className="min-w-24 p-0" disabled={disabled}>
           Update
         </Button>
       </DialogTrigger>
@@ -85,7 +88,7 @@ function UpdateButton(props: UpdateButtonProps) {
             <div className="flex flex-col gap-2">
               {addedTags.map((id) => (
                 <button
-                  key={id}
+                  key={`tag-${id}`}
                   className="flex w-fit select-none items-center rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary dark:border-dark-primary dark:text-dark-primary"
                   onClick={() => {
                     setAddedTags(addedTags.filter((t) => t !== id));
@@ -102,7 +105,7 @@ function UpdateButton(props: UpdateButtonProps) {
             <div className="flex flex-col gap-2">
               {unaddedTags.map((id) => (
                 <button
-                  key={id}
+                  key={`tag-${id}`}
                   className="flex w-fit select-none items-center rounded-full border border-primary px-2.5 py-0.5 font-semibold text-primary dark:border-dark-primary dark:text-dark-primary"
                   onClick={() => {
                     setAddedTags([...addedTags, id]);
@@ -130,6 +133,7 @@ interface TrackListCardProps {
   tagData: Array<TagType>;
 }
 
+// track list card
 export default function TrackListCard(props: TrackListCardProps) {
   const { data, tagData } = props;
   const [isCheckedArray, setIsCheckedArray] = useState(data.map(() => false));
@@ -163,15 +167,17 @@ export default function TrackListCard(props: TrackListCardProps) {
     updateIsAllChecked(newIsCheckedArray);
   }
 
+  // 根據 input 篩選歌曲
   useEffect(() => {
     if (data && data.length > 0) {
-      setFilteredData(
-        data.filter(
-          (d) =>
-            (d.track_name as string).split(" - ")[0].split(" (")[0].includes(searchInput.trim()) ||
-            (d.artist_name as string).split(" (")[0].includes(searchInput.trim()),
-        ),
+      const handledData = data.filter(
+        (d) =>
+          (d.track_name as string).split(" - ")[0].split(" (")[0].includes(searchInput.trim()) ||
+          (d.artist_name as string).split(" (")[0].includes(searchInput.trim()),
       );
+      setFilteredData(handledData);
+      setIsCheckedArray(new Array(handledData.length).fill(false));
+      updateIsAllChecked(new Array(handledData.length).fill(false));
     }
   }, [searchInput]);
 
@@ -202,7 +208,7 @@ export default function TrackListCard(props: TrackListCardProps) {
         <CardTitle>
           Track List
           <span className="ml-2 text-base leading-none">
-            ({isCheckedArray.filter((e) => e).length}/{data.length} tracks)
+            ({isCheckedArray.filter((e) => e).length}/{filteredData.length} tracks)
           </span>
         </CardTitle>
       </CardHeader>
@@ -221,7 +227,7 @@ export default function TrackListCard(props: TrackListCardProps) {
           {/* delete button */}
           <Button
             variant={"outline"}
-            className="w-32 border-custom-red-700 text-custom-red-700 hover:bg-custom-red-700 dark:border-custom-red-300 dark:text-custom-red-300 dark:hover:bg-custom-red-300"
+            className="min-w-24 border-custom-red-700 p-0 text-custom-red-700 hover:bg-custom-red-700 dark:border-custom-red-300 dark:text-custom-red-300 dark:hover:bg-custom-red-300"
             onClick={clickDeleteBtn}
             disabled={!isCheckedArray.some((e) => e)}
           >

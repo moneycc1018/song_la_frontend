@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { selectedArtistsAtom, selectedTrackAtom } from "@/store/selected-item-store";
+import { selectedArtistsAtom, selectedTagsAtom, selectedTrackAtom } from "@/store/selected-item-store";
 
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
@@ -13,10 +13,11 @@ export default function PageSwitch() {
   const pathname = usePathname();
   const setSelectedArtists = useSetAtom(selectedArtistsAtom);
   const setSelectedTrack = useSetAtom(selectedTrackAtom);
+  const setSelectedTags = useSetAtom(selectedTagsAtom);
 
   return (
     <div className="fixed inset-x-0 top-16 z-10">
-      <Tabs defaultValue={pathname.split("/")[1]} className="flex w-full justify-center px-64 py-4">
+      <Tabs defaultValue={pathname.split("/")[1]} className="flex w-full justify-center px-32 py-4">
         <TabsList className="w-1/2 select-none">
           <TabsTrigger value="kkbox" className="w-full" asChild>
             <Link
@@ -25,6 +26,7 @@ export default function PageSwitch() {
               onClick={() => {
                 setSelectedArtists([]);
                 setSelectedTrack({});
+                setSelectedTags([]);
               }}
             >
               <div className="relative min-h-5 min-w-5">
@@ -49,6 +51,7 @@ export default function PageSwitch() {
               onClick={() => {
                 setSelectedArtists([]);
                 setSelectedTrack({});
+                setSelectedTags([]);
               }}
             >
               <div className="relative min-h-5 min-w-5">

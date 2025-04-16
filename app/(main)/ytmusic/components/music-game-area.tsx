@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom, useAtomValue } from "jotai";
 import { LightbulbIcon, PlayIcon } from "lucide-react";
+import ReactPlayer from "react-player/youtube";
 
 import {
   AlertDialog,
@@ -18,24 +19,44 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-import { KkboxInfoType } from "@/types/kkbox-info.type";
+import { YtmusicInfoType } from "@/types/ytmusic-info.type";
 
 import { shuffle } from "@/lib";
 import { selectedArtistsAtom, selectedTagsAtom, selectedTrackAtom } from "@/store/selected-item-store";
+
+// 柱狀波浪動畫
+function MusicAnimation() {
+  const [lengthArray, setLengthArray] = useState<Array<number>>([32, 24, 16, 8, 0]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setLengthArray((prev) => prev.map((e) => (e + 8 > 32 ? 0 : e + 8)));
+    }, 100);
+
+    return () => clearTimeout(t);
+  });
+
+  return (
+    <div className="absolute left-[84px] top-12 z-20 flex size-8 flex-row items-end gap-[2px]">
+      {lengthArray.map((e, index) => (
+        <div key={index} className="w-1/5 bg-primary transition-all" style={{ height: `${e}px` }}></div>
+      ))}
+    </div>
+  );
+}
 
 // track frame
 function TrackFrame() {
   const track = useAtomValue(selectedTrackAtom);
 
   return (
-    <div className="relative left-[-50px] h-[150px] w-[300px]">
-      <div className="pointer-events-none absolute z-10 h-[150px] w-[300px] border-y-[50px] border-s-[100px] border-light-background dark:border-dark-background"></div>
-      {/* kkbox iframe */}
+    <div className="relative">
       {track && Object.keys(track).length > 0 && (
-        <iframe
-          src={`https://widget.kkbox.com/v1/?id=${track.track_id}&type=song&terr=TW&autoplay=true`}
-          allow="autoplay"
-        />
+        <>
+          <MusicAnimation />
+          <div className="pointer-events-none absolute z-10 h-[150px] w-[200px] bg-light-background dark:bg-dark-background"></div>
+          <ReactPlayer url={`https://www.youtube.com/watch?v=${track.video_id}`} width={200} height={150} playing />
+        </>
       )}
     </div>
   );
@@ -54,13 +75,14 @@ function BtnBar() {
     setTrackIndex(0);
   }, [selectedArtistsStr]);
 
+  // 根據所選歌手取得歌曲
   const { isLoading, data } = useQuery({
     queryKey: ["info", selectedArtistsStr],
     queryFn: async () => {
-      const res = await fetch(`/api/kkbox/info?column=artist_id&value=${selectedArtistsStr}`);
+      const res = await fetch(`/api/ytmusic/info?column=artist_id&value=${selectedArtistsStr}`);
       const result = await res.json();
 
-      return shuffle(result.data);
+      return shuffle(result.data); // 隨機打亂陣列順序
     },
     enabled: selectedArtistsStr !== "",
   });
@@ -69,11 +91,11 @@ function BtnBar() {
     selectedTagIdArray.length === 0
       ? data
       : data?.filter(
-          (d: KkboxInfoType) => d.tags && (d.tags as Array<number>).some((t) => selectedTagIdArray.includes(t)),
+          (d: YtmusicInfoType) => d.tags && (d.tags as Array<number>).some((t) => selectedTagIdArray.includes(t)),
         );
-
   const trackCount = filteredData?.length || 0;
 
+  // 點擊 play 按鈕
   function clickPlayBtn() {
     if (trackCount === 0) {
       alert("Track pool is empty!");
@@ -91,12 +113,15 @@ function BtnBar() {
 
   return (
     <div className="absolute bottom-0 z-10 flex items-center justify-center gap-4">
+      {/* track count (played/total) */}
       <div className="flex h-10 w-32 select-none items-center justify-center rounded-md border border-primary text-primary dark:border-dark-primary dark:text-dark-primary">
         {isLoading ? "Loading..." : `${trackIndex}/${trackCount} tracks`}
       </div>
-      <Button variant={"outline"} className="px-8" onClick={() => clickPlayBtn()}>
+      {/* play button */}
+      <Button variant={"outline"} className="px-8" onClick={clickPlayBtn}>
         <PlayIcon />
       </Button>
+      {/* answer button */}
       <AlertDialog>
         <AlertDialogTrigger className="!ring-0 !ring-offset-0" asChild>
           <Button variant={"outline"} className="px-8">
@@ -108,9 +133,9 @@ function BtnBar() {
             <AlertDialogHeader>
               <AlertDialogTitle>{selectedTrack.track_name}</AlertDialogTitle>
               <AlertDialogDescription className="flex flex-col">
-                <span>Artist: {selectedTrack.artist_name}</span>
+                <span>Artist: {(selectedTrack.artist_names as Array<string>).join(", ")}</span>
                 <span>Album: {selectedTrack.album_name}</span>
-                <span>Date: {selectedTrack.release_date}</span>
+                <span>Year: {selectedTrack.release_year}</span>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -123,13 +148,12 @@ function BtnBar() {
   );
 }
 
-export default function GameArea() {
+// music game area
+export function MusicGameArea() {
   return (
-    <div className="relative flex flex-col items-center justify-center gap-4">
-      {/* track frame */}
+    <>
       <TrackFrame />
-      {/* button bar */}
       <BtnBar />
-    </div>
+    </>
   );
 }

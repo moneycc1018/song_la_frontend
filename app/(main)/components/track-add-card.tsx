@@ -80,10 +80,15 @@ export default function TrackAddCard() {
       <CardContent className="space-y-4">
         <div className="flex items-center gap-2">
           <Input placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
-          <Button variant={"outline"} className="w-32" onClick={() => setQueryValue(searchInput.trim())}>
+          <Button variant={"outline"} className="min-w-24 p-0" onClick={() => setQueryValue(searchInput.trim())}>
             Search
           </Button>
-          <Button variant={"outline"} className="w-32" onClick={clickAddBtn} disabled={!(data && data.length > 0)}>
+          <Button
+            variant={"outline"}
+            className="min-w-24 p-0"
+            onClick={clickAddBtn}
+            disabled={!(data && data.length > 0)}
+          >
             Add
           </Button>
         </div>

@@ -1,0 +1,19 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      API_URL: ${API_URL}
+    restart: always
+    networks:
+      - song-la
+
+networks:
+  song-la:
+    name: song-la-network
+    driver: bridge
