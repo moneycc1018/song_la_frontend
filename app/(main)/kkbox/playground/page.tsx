@@ -6,6 +6,8 @@ import ArtistSelectCard from "../../components/artist-select-card";
 import { TagSelectCard } from "../../components/tag-select-card";
 import GameArea from "../components/game-area";
 
+export const dynamic = "force-dynamic";
+
 export default async function KkboxPlaygroundPage() {
   const result = await prisma.kkbox_info.groupBy({
     by: ["artist_id", "artist_name"],

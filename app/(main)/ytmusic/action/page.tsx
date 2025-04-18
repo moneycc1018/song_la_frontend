@@ -6,6 +6,8 @@ import TagModifyCard from "../../components/tag-modify-card";
 import TrackAddCard from "../../components/track-add-card";
 import TrackListCard from "../../components/track-list-card";
 
+export const dynamic = "force-dynamic";
+
 export default async function YtmusicActionPage() {
   const result = await prisma.ytmusic_info.findMany({
     select: {

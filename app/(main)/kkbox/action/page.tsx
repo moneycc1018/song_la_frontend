@@ -6,6 +6,8 @@ import TagModifyCard from "../../components/tag-modify-card";
 import TrackAddCard from "../../components/track-add-card";
 import TrackListCard from "../../components/track-list-card";
 
+export const dynamic = "force-dynamic";
+
 export default async function KkboxActionPage() {
   const result = await prisma.kkbox_info.findMany({
     select: {

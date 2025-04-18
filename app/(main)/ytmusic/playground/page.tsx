@@ -6,6 +6,8 @@ import ArtistSelectCard from "../../components/artist-select-card";
 import { TagSelectCard } from "../../components/tag-select-card";
 import GameArea from "../components/game-area";
 
+export const dynamic = "force-dynamic";
+
 export default async function YtmusicPlaygroundPage() {
   const result = await prisma.ytmusic_info.groupBy({
     by: ["author", "artist_ids", "artist_names"],
